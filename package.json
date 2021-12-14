@@ -1,0 +1,56 @@
+{
+  "name": "uni-env",
+  "version": "1.0.0",
+  "description": "An NPM module to register and get variable can used in both nodeJS and mini-program",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winrey/universal-env"
+  },
+  "keywords": [
+    "environment-variable",
+    "node",
+    "wechat-mini-program"
+  ],
+  "author": "Winrey",
+  "files": [
+    "lib/**/*"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/winrey/universal-env/issues"
+  },
+  "homepage": "https://github.com/winrey/universal-env#readme",
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "@types/lodash": "^4.14.177",
+    "@types/node": "^16.11.12",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
+    "babel-jest": "^27.3.1",
+    "eslint": "^8.2.0",
+    "jest": "^27.3.1",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.0.7",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "lodash": "^4.17.21",
+    "tslib": "^2.3.1"
+  }
+}
