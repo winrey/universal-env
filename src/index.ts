@@ -66,7 +66,7 @@ const getEnvVar = (name: string) => {
 
 // const findDefined = (arr: any[]) => arr.find(v => v !== undefined)
 
-export type TEnvOptions<T=string> = {
+export type TEnvOptions<T=string | number | boolean | object> = {
   default?: T,
   release?: T,
   staging?: T,
@@ -77,15 +77,20 @@ export type TEnvOptions<T=string> = {
    */
   required?: boolean,
   /** 
-   * Varible Will be overwided by the system environment varible if provided.
+   * Varible Will be overrided by the system environment varible if provided.
    * @default true
    */
-  overwide?: boolean
+  override?: boolean
+  /** 
+   * Check Duplicate Key and give you a warn log
+   * @default true
+   */
+  checkDuplicate?: boolean
   /** 
    * Default type when get
    * @default "string"
    */
-  // type?: "string" | "boolean" | "number" | "json"
+  type?: "string" | "boolean" | "number" | "json"
 } & { [env: string]: T }
 
 export type TInitOptions = {
@@ -155,7 +160,11 @@ export abstract class Envs {
     return Envs.nowEnv = getEnvName()
   }
 
-  static register(key: string, options: TEnvOptions<string> | string | number = {}) {
+  static set(key: string, options: TEnvOptions | string | number | boolean = {}) {
+    this.register(key, options)
+  }
+
+  static register(key: string, options: TEnvOptions | string | number | boolean = {}) {
     if (typeof options === "string") {
       options = { default: options, type: 'string' }
     }
@@ -165,12 +174,24 @@ export abstract class Envs {
     if (typeof options === "boolean") {
       options = { default: String(options), type: 'boolean' }
     }
-    const { required = true, overwide = true, type = "string", ...rest } = options
+    const { 
+      required = true,
+      override = true,
+      checkDuplicate = true,
+      type = "string",
+      ...rest
+    } = options
     const env = this.getNowEnv()
-    if (this.vars.has(key)) {
+    if (checkDuplicate && this.vars.has(key)) {
       console.warn(`DUPLICATE ENVIRONMENT VARIABLE REGISTER: ${key}`)
     }
-    const val = (overwide ? getEnvVar(key) : undefined) ?? rest[env] ?? rest.default
+    let val = (override ? getEnvVar(key) : undefined) ?? rest[env] ?? rest.default
+    if (type === 'json') {
+      val = JSON.stringify(val)
+    }
+    else {
+      val = String(val)
+    }
     if (required && val === undefined) {
       throw new Error(`ENVIRONMENT VARIABLE REQUIRED: ${key}`)
     }
@@ -178,7 +199,7 @@ export abstract class Envs {
     this.types.set(key, type)
   }
 
-  static get(key: string, defaultVal?: any) {
+  static get(key: string, defaultVal?: unknown) {
     switch (this.types.get(key)) {
       case 'string': return this.getByString(key)
       case 'number': return this.getByNumber(key)
