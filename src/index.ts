@@ -9,15 +9,21 @@ const FALSILY_STRING = ["0", "false", "none", "null", "n/a", "[]", "{}", "f", "o
 //   return typeof window === 'undefined' ? true : false ;
 // }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any,no-var
-declare var wx: any
-
 const mapIfMatch = (env: string, map: Record<string, string>) => {
   env = env.toLowerCase()
   return env in map ? map[env] : (env || DEFAULT_ENV);
 }
 
-const isWechatMiniProgram = () => wx && wx.getAccountInfoSync
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,no-var
+declare var wx: any
+
+const isWechatMiniProgram = () => {
+  try {
+    return wx?.getAccountInfoSync
+  } catch {
+    return false
+  }
+}
 const isNodeJS = () => !isWechatMiniProgram() && typeof process !== "undefined" && process && process.env
 
 /**
@@ -105,7 +111,7 @@ export type TInitOptions = {
    * Force load env file Path.
    * It'll ignore `folder`.
    */
-  vars?: Record<string, TEnvOptions>
+  vars?: { [key: string]: TEnvOptions | string | number }
 }
 
 export abstract class Envs {
