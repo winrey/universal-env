@@ -1,5 +1,5 @@
 {
-  "name": "uni-env",
+  "name": "uni-envs",
   "version": "1.0.0",
   "description": "An NPM module to register and get variable can used in both nodeJS and mini-program",
   "main": "lib/index.js",
