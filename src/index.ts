@@ -210,17 +210,20 @@ export abstract class Envs {
   }
 
   /**
-   * 
-   * @param key 
-   * @param options 
+   *
+   * @param key
+   * @param options
    *    defaultValFunc: () => []
    *    separator: /,|;/
-   * @returns 
+   * @returns
    */
-  static getByStringList(key: string, options: {
-    separator?: string | RegExp
-    defaultValFunc?: () => ([]),
-  } = {}) {
+  static getByStringList(
+    key: string,
+    options: {
+      separator?: string | RegExp;
+      defaultValFunc?: () => [];
+    } = {},
+  ) {
     const str = this.getByString(key);
     if (!str.trim()) {
       return options?.defaultValFunc?.() ?? [];
