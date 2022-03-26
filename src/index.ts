@@ -221,7 +221,7 @@ export abstract class Envs {
     key: string,
     options: {
       separator?: string | RegExp;
-      defaultValFunc?: () => [];
+      defaultValFunc?: () => string[];
     } = {},
   ) {
     const str = this.getByString(key);
