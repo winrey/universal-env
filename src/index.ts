@@ -209,6 +209,25 @@ export abstract class Envs {
     return this.vars.get(key) ?? defaultVal;
   }
 
+  /**
+   * 
+   * @param key 
+   * @param options 
+   *    defaultValFunc: () => []
+   *    separator: /,|;/
+   * @returns 
+   */
+  static getByStringList(key: string, options: {
+    separator?: string | RegExp
+    defaultValFunc?: () => ([]),
+  } = {}) {
+    const str = this.getByString(key);
+    if (!str.trim()) {
+      return options?.defaultValFunc?.() ?? [];
+    }
+    return str.split(options?.separator ?? /,|;/);
+  }
+
   static getByNumber(key: string, defaultVal?: number) {
     return Number(this.getByString(key) || defaultVal);
   }
